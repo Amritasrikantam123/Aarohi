@@ -1,0 +1,28 @@
+# Aarohi (आरोही) Prototype Tasks
+
+- [x] Project Setup
+  - [x] Initialize Vite React application in current directory
+  - [x] Install `lucide-react` for modern icons
+  - [x] Verify build and cleanup default assets
+- [x] CSS Framework & Design System
+  - [x] Build global CSS with custom variables (color palette, spacing, typography, glassmorphism) in `src/index.css`
+  - [x] Import Devnagari-compatible beautiful fonts (e.g. Rozha One, Hind, Poppins) from Google Fonts
+- [x] Mock Database & Local Storage Integration
+  - [x] Create `src/data/mockData.js` with comprehensive sample data (scholarships, careers, mentors, opportunities, students)
+  - [x] Write hooks or helper functions to initialize and load state from `localStorage`
+- [x] Component Development
+  - [x] **Navbar & Sidebar**: Main navigation, mobile responsiveness, persona switching
+  - [x] **Landing Page**: Matching the reference image (Hero, Mission, Stats, Offers, Success Stories, Footer)
+  - [x] **Student Dashboard**: Card layouts, profile header, metrics row, performance line chart (custom SVG)
+  - [x] **Academic Progress Tracker**: Form to add marks, semester timeline, achievement badges list
+  - [x] **Scholarship Hub**: Eligibility checker, filters, scholarship detail modals
+  - [x] **Career Guidance Center**: 8 domains, interactive roadmap step-by-step UI, recommended courses
+  - [x] **Internship & Opportunities Portal**: Lists, details, and application states
+  - [x] **Mentorship Section**: Mentor cards, booking counseling calendar mock
+  - [x] **Grievance & Support Portal**: Submission form, ticket status timeline, emergency support resources
+  - [x] **Admin Dashboard**: Analytics counters, district-wise heat tables, list of reported grievances to review/resolve
+- [x] Image Assets
+  - [x] Generate modern illustrations or select clean SVG shapes for visual storytelling (hero banner, success stories)
+- [x] Verification & Walkthrough
+  - [x] Verify full responsive UI, check interactive state transitions and localStorage persistence
+  - [x] Build and document results in `walkthrough.md`
