@@ -30,7 +30,7 @@ import Mentorship from "./Mentorship";
 import GrievancePortal from "./GrievancePortal";
 import StudentProfileView from "./StudentProfileView";
 
-export default function StudentDashboard({ studentProfile, onUpdateProfile, onLogout, currentLang }) {
+export default function StudentDashboard({ db, studentProfile, onUpdateProfile, onLogout, currentLang }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -38,15 +38,13 @@ export default function StudentDashboard({ studentProfile, onUpdateProfile, onLo
   const [storyInput, setStoryInput] = useState("");
   const [storyStatus, setStoryStatus] = useState(studentProfile.featuredStory?.isFeatured ? "submitted" : "idle");
 
-  const db = getDB();
-
   // Calculations for KPI Metrics
   const latestPercentage = studentProfile.academicRecords.length > 0 
     ? studentProfile.academicRecords[studentProfile.academicRecords.length - 1].marksPercentage 
     : 75;
 
   const eligibleScholarshipsCount = db.scholarships.filter(s => {
-    return latestPercentage >= s.eligibility.minMarks && studentProfile.familyIncome <= s.eligibility.maxIncome;
+    return latestPercentage >= (s.eligibility?.minMarks || 0) && studentProfile.familyIncome <= (s.eligibility?.maxIncome || 9999999);
   }).length;
 
   const activeBookingsCount = studentProfile.bookedSessions ? studentProfile.bookedSessions.length : 0;
@@ -99,11 +97,11 @@ export default function StudentDashboard({ studentProfile, onUpdateProfile, onLo
       case "academic":
         return <AcademicTracker studentProfile={studentProfile} onUpdateProfile={onUpdateProfile} currentLang={currentLang} />;
       case "scholarships":
-        return <ScholarshipHub studentProfile={studentProfile} onUpdateProfile={onUpdateProfile} currentLang={currentLang} />;
+        return <ScholarshipHub db={db} studentProfile={studentProfile} onUpdateProfile={onUpdateProfile} currentLang={currentLang} />;
       case "careers":
-        return <CareerGuidance studentProfile={studentProfile} currentLang={currentLang} />;
+        return <CareerGuidance db={db} studentProfile={studentProfile} currentLang={currentLang} />;
       case "opportunities":
-        return <Opportunities currentLang={currentLang} />;
+        return <Opportunities db={db} currentLang={currentLang} />;
       case "mentorship":
         return <Mentorship studentProfile={studentProfile} onUpdateProfile={onUpdateProfile} currentLang={currentLang} />;
       case "grievance":
@@ -317,7 +315,7 @@ export default function StudentDashboard({ studentProfile, onUpdateProfile, onLo
         <div className="sidebar-header">
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <GraduationCap size={28} color="#818cf8" />
-            <span className="sidebar-logo" style={{ fontFamily: currentLang === 'te' ? 'inherit' : 'var(--font-hindi)' }}>
+            <span className={`sidebar-logo brand-text-${currentLang}`}>
               {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'आरोही' : 'Aarohi'}
             </span>
           </div>
@@ -379,7 +377,7 @@ export default function StudentDashboard({ studentProfile, onUpdateProfile, onLo
               <Menu size={24} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span className="logo-hindi-nav" style={{ fontSize: "1.4rem", fontFamily: currentLang === 'te' ? 'inherit' : 'var(--font-hindi)' }}>
+              <span className={`logo-hindi-nav brand-text-${currentLang}`} style={{ fontSize: "1.4rem" }}>
                 {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'आरोही' : 'Aarohi'}
               </span>
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", background: "var(--lavender-bg)", padding: "2px 8px", borderRadius: "10px", fontWeight: 600 }}>

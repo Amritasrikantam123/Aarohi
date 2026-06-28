@@ -18,18 +18,17 @@ import {
 } from "lucide-react";
 import { getDB } from "../data/mockData";
 
-export default function CareerGuidance({ studentProfile, currentLang }) {
-  const db = getDB();
-  const careers = db.careers;
-  const scholarships = db.scholarships;
-  const mentors = db.mentors;
-  const opportunities = db.opportunities;
+export default function CareerGuidance({ db, studentProfile, currentLang }) {
+  const careers = db?.careers || [];
+  const scholarships = db?.scholarships || [];
+  const mentors = db?.mentors || [];
+  const opportunities = db?.opportunities || [];
 
   const [subTab, setSubTab] = useState("explore"); // explore, ai-planner
 
   // Exploration states
-  const initialCareerId = studentProfile.careerInterests.length > 0 
-    ? careers.find(c => studentProfile.careerInterests[0].toLowerCase().includes(c.title.split(" ")[0].toLowerCase()))?.id || "engineering"
+  const initialCareerId = studentProfile?.careerInterests && studentProfile.careerInterests.length > 0 
+    ? careers.find(c => studentProfile.careerInterests[0] && c.title && studentProfile.careerInterests[0].toLowerCase().includes(c.title.split(" ")[0].toLowerCase()))?.id || "engineering"
     : "engineering";
   const [activeCareerId, setActiveCareerId] = useState(initialCareerId);
   const activeCareer = careers.find(c => c.id === activeCareerId) || careers[0];
@@ -37,11 +36,19 @@ export default function CareerGuidance({ studentProfile, currentLang }) {
   // AI Planner Wizard States
   const [wizardStep, setWizardStep] = useState(1);
   const [inputs, setInputs] = useState({
-    studentClass: studentProfile.class || "Class 11th (Science)",
+    studentClass: studentProfile?.class || "Class 11th (Science)",
     interests: [],
     careerGoal: ""
   });
   const [aiResult, setAiResult] = useState(null);
+
+  if (!activeCareer) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center", color: "var(--text-muted)" }}>
+        {currentLang === "en" ? "No career guidance data available at the moment." : "इस समय कोई करियर मार्गदर्शन डेटा उपलब्ध नहीं है।"}
+      </div>
+    );
+  }
 
   const interestOptions = [
     { id: "math", label: "Mathematics & Logic" },
@@ -76,25 +83,30 @@ export default function CareerGuidance({ studentProfile, currentLang }) {
     // Basic recommendation algorithm based on selected goals
     const selectedGoal = careerGoalOptions.find(g => g.id === inputs.careerGoal);
     const domainId = selectedGoal ? selectedGoal.domain : "engineering";
-    const matchedDomain = careers.find(c => c.id === domainId);
+    const matchedDomain = careers.find(c => c.id === domainId) || careers[0] || { title: "General", skills: [], courses: [] };
 
     // 1. Filter Scholarships
     const recommendedScholarships = scholarships.filter(s => {
       // Show scholarships with min marks match
       const avgMarks = 80; // default average
-      const matchesMarks = avgMarks >= s.eligibility.minMarks;
-      const matchesIncome = studentProfile.familyIncome <= s.eligibility.maxIncome;
+      const minMarks = s.eligibility?.minMarks || 0;
+      const maxIncome = s.eligibility?.maxIncome || 9999999;
+      const matchesMarks = avgMarks >= minMarks;
+      const matchesIncome = studentProfile?.familyIncome ? studentProfile.familyIncome <= maxIncome : true;
       return matchesMarks && matchesIncome;
     }).slice(0, 2);
 
     // 2. Filter Mentors matching field
     const recommendedMentors = mentors.filter(m => {
-      return m.field.toLowerCase().includes(domainId.substring(0, 4)) || 
-             m.field.toLowerCase().includes(matchedDomain.title.split(" ")[0].toLowerCase().substring(0, 4));
+      if (!m.field) return false;
+      const matchesDomainId = m.field.toLowerCase().includes(domainId.substring(0, 4));
+      const matchesTitle = matchedDomain.title ? m.field.toLowerCase().includes(matchedDomain.title.split(" ")[0].toLowerCase().substring(0, 4)) : false;
+      return matchesDomainId || matchesTitle;
     }).slice(0, 2);
 
     // 3. Filter Opportunities
     const recommendedOpps = opportunities.filter(o => {
+      if (!o.title) return false;
       if (domainId === "engineering") return o.title.toLowerCase().includes("web") || o.title.toLowerCase().includes("tech") || o.title.toLowerCase().includes("stem");
       if (domainId === "medicine") return o.title.toLowerCase().includes("science") || o.title.toLowerCase().includes("stem");
       return o.type === "Workshop";
@@ -103,8 +115,8 @@ export default function CareerGuidance({ studentProfile, currentLang }) {
     setAiResult({
       careerDomain: matchedDomain,
       goalName: selectedGoal ? selectedGoal.label : "Professional",
-      skills: matchedDomain.skills,
-      courses: matchedDomain.courses,
+      skills: matchedDomain.skills || [],
+      courses: matchedDomain.courses || [],
       scholarships: recommendedScholarships,
       mentors: recommendedMentors,
       opportunities: recommendedOpps
@@ -166,7 +178,7 @@ export default function CareerGuidance({ studentProfile, currentLang }) {
           <div className="careers-grid" style={{ marginBottom: "2rem" }}>
             {careers.map((c) => {
               const isActive = c.id === activeCareerId;
-              const isStudentInterest = studentProfile.careerInterests.some(i => i.toLowerCase().includes(c.title.split(" ")[0].toLowerCase()));
+              const isStudentInterest = studentProfile?.careerInterests ? studentProfile.careerInterests.some(i => i && c.title && i.toLowerCase().includes(c.title.split(" ")[0].toLowerCase())) : false;
 
               return (
                 <div 

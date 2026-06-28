@@ -58,108 +58,160 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
     });
   };
 
+  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [authForm, setAuthForm] = useState({
+    email: "",
+    password: ""
+  });
+
   const validateStudent = () => {
     let err = {};
-    if (!studentForm.name.trim()) err.name = "Full name is required";
-    if (!studentForm.age || parseInt(studentForm.age) < 10) err.age = "Valid age is required";
-    if (!studentForm.school.trim()) err.school = "School name is required";
-    if (!studentForm.className) err.className = "Class selection is required";
-    if (!studentForm.district.trim()) err.district = "District name is required";
-    if (!studentForm.familyIncome || parseFloat(studentForm.familyIncome) < 0) err.familyIncome = "Income details are required";
-    if (!studentForm.contact.trim()) err.contact = "Contact number is required";
+    if (!isLoginMode) {
+      if (!studentForm.name.trim()) err.name = "Full name is required";
+      if (!studentForm.age || parseInt(studentForm.age) < 10) err.age = "Valid age is required";
+      if (!studentForm.school.trim()) err.school = "School name is required";
+      if (!studentForm.className) err.className = "Class selection is required";
+      if (!studentForm.district.trim()) err.district = "District name is required";
+      if (!studentForm.familyIncome || parseFloat(studentForm.familyIncome) < 0) err.familyIncome = "Income details are required";
+      if (!studentForm.contact.trim()) err.contact = "Contact number is required";
+    }
+    if (!authForm.email.trim() || !authForm.email.includes("@")) err.email = "Valid email is required";
+    if (!authForm.password || authForm.password.length < 4) err.password = "Password must be at least 4 characters";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
   const validateMentor = () => {
     let err = {};
-    if (!mentorForm.name.trim()) err.name = "Full name is required";
-    if (!mentorForm.role.trim()) err.role = "Professional role is required";
-    if (!mentorForm.organization.trim()) err.organization = "Organization/Company is required";
-    if (!mentorForm.bio.trim()) err.bio = "Bio details are required";
-    if (!mentorForm.proof.trim() || !mentorForm.proof.startsWith("http")) err.proof = "A valid LinkedIn or portfolio URL is required";
+    if (!isLoginMode) {
+      if (!mentorForm.name.trim()) err.name = "Full name is required";
+      if (!mentorForm.role.trim()) err.role = "Professional role is required";
+      if (!mentorForm.organization.trim()) err.organization = "Organization/Company is required";
+      if (!mentorForm.bio.trim()) err.bio = "Bio details are required";
+      if (!mentorForm.proof.trim() || !mentorForm.proof.startsWith("http")) err.proof = "A valid LinkedIn or portfolio URL is required";
+    }
+    if (!authForm.email.trim() || !authForm.email.includes("@")) err.email = "Valid email is required";
+    if (!authForm.password || authForm.password.length < 4) err.password = "Password must be at least 4 characters";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  const handleStudentSubmit = (e) => {
+  const handleStudentSubmit = async (e) => {
     e.preventDefault();
     if (!validateStudent()) return;
 
-    const db = getDB();
-    const newStudent = {
-      id: "STU_" + Date.now(),
-      name: studentForm.name,
-      age: parseInt(studentForm.age),
-      school: studentForm.school,
-      class: studentForm.className,
-      district: studentForm.district,
-      state: studentForm.state,
-      familyIncome: parseFloat(studentForm.familyIncome),
-      contact: studentForm.contact,
-      email: studentForm.email || `${studentForm.name.toLowerCase().replace(/\s+/g, "")}@aarohi.org`,
-      careerInterests: studentForm.careerInterests,
-      academicRecords: [
-        { examName: "Class 10th Boards", year: 2025, marksPercentage: 78, status: "Completed" }
-      ],
-      appliedScholarships: [],
-      bookedSessions: [],
-      avatar: studentForm.avatar || "",
-      bio: "",
-      achievements: [],
-      certifications: [],
-      featuredStory: { 
-        isFeatured: true, 
-        quoteEn: "Aarohi gave me the confidence to pursue secondary education and discover amazing scholarship opportunities!", 
-        quoteHi: "आरोही ने मुझे माध्यमिक शिक्षा प्राप्त करने और शानदार छात्रवृत्ति के अवसरों को खोजने का आत्मविश्वास दिया!", 
-        quoteTe: "ఆరోహి నాకు సెకండరీ విద్యను అభ్యసించడానికి మరియు అద్భుతమైన స్కాలర్‌షిప్స్ కనుగొనడానికి విశ్వాసాన్ని ఇచ్చింది!", 
-        approved: true 
+    try {
+      const endpoint = isLoginMode ? "http://localhost:5000/api/auth/login" : "http://localhost:5000/api/auth/register";
+      const payload = isLoginMode 
+        ? { email: authForm.email, password: authForm.password }
+        : {
+            name: studentForm.name,
+            email: authForm.email,
+            password: authForm.password,
+            role: "student",
+            age: parseInt(studentForm.age),
+            school: studentForm.school,
+            class: studentForm.className,
+            district: studentForm.district,
+            state: studentForm.state,
+            familyIncome: parseFloat(studentForm.familyIncome),
+            contact: studentForm.contact,
+            careerInterests: studentForm.careerInterests,
+            academicRecords: [],
+            avatar: studentForm.avatar || "",
+            featuredStory: { 
+              isFeatured: true, 
+              quoteEn: "Aarohi gave me the confidence to pursue secondary education and discover amazing scholarship opportunities!", 
+              quoteHi: "आरोही ने मुझे माध्यमिक शिक्षा प्राप्त करने और शानदार छात्रवृत्ति के अवसरों को खोजने का आत्मविश्वास दिया!", 
+              quoteTe: "ఆరోహి నాకు సెకండరీ విద్యను అభ్యసించడానికి మరియు అద్భుతమైన స్కాలర్‌షిప్స్ కనుగొనడానికి విశ్వాసాన్ని ఇచ్చింది!", 
+              approved: true 
+            }
+          };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Authentication failed");
+        return;
       }
-    };
 
-    db.studentsList.push(newStudent);
-    db.studentProfile = newStudent;
-    saveDB(db);
+      localStorage.setItem("aarohi_token", data.token);
+      localStorage.setItem("aarohi_user", JSON.stringify(data.user));
 
-    logActivity(
-      `A new student, ${newStudent.name}, registered from ${newStudent.district}, ${newStudent.state}.`,
-      `एक नई छात्रा, ${newStudent.name}, ने ${newStudent.district}, ${newStudent.state} से पंजीकरण किया।`,
-      `${newStudent.district}, ${newStudent.state} నుండి కొత్త విద్యార్థిని ${newStudent.name} నమోదు చేసుకున్నారు.`
-    );
+      const db = getDB();
+      db.studentProfile = data.user.studentProfile || data.user;
+      if (!isLoginMode) {
+        db.studentsList.push(db.studentProfile);
+      }
+      saveDB(db);
 
-    onRegistrationSuccess(newStudent);
+      logActivity(
+        isLoginMode ? `Student ${db.studentProfile.name} logged in.` : `A new student, ${db.studentProfile.name}, registered from ${db.studentProfile.district}, ${db.studentProfile.state}.`,
+        isLoginMode ? `छात्रा ${db.studentProfile.name} ने लॉगिन किया।` : `एक नई छात्रा, ${db.studentProfile.name}, ने ${db.studentProfile.district}, ${db.studentProfile.state} से पंजीकरण किया।`,
+        isLoginMode ? `విద్యార్థిని ${db.studentProfile.name} లాగిన్ అయ్యారు.` : `${db.studentProfile.district}, ${db.studentProfile.state} నుండి కొత్త విద్యార్థిని ${db.studentProfile.name} నమోదు చేసుకున్నారు.`
+      );
+
+      onRegistrationSuccess(db.studentProfile);
+    } catch (err) {
+      console.error(err);
+      alert("Backend connection error. Ensure the backend server is running.");
+    }
   };
 
-  const handleMentorSubmit = (e) => {
+  const handleMentorSubmit = async (e) => {
     e.preventDefault();
     if (!validateMentor()) return;
 
-    const db = getDB();
-    const newPendingMentor = {
-      id: "m_pending_" + Date.now(),
-      name: mentorForm.name,
-      role: mentorForm.role,
-      organization: mentorForm.organization,
-      field: mentorForm.field,
-      state: mentorForm.state,
-      languages: mentorForm.languages.length > 0 ? mentorForm.languages : ["English"],
-      experience: mentorForm.experience,
-      bio: mentorForm.bio,
-      proof: mentorForm.proof,
-      status: "pending"
-    };
+    try {
+      const endpoint = isLoginMode ? "http://localhost:5000/api/auth/login" : "http://localhost:5000/api/auth/register";
+      const payload = isLoginMode
+        ? { email: authForm.email, password: authForm.password }
+        : {
+            name: mentorForm.name,
+            email: authForm.email,
+            password: authForm.password,
+            role: "mentor",
+            organization: mentorForm.organization,
+            field: mentorForm.field,
+            state: mentorForm.state,
+            languages: mentorForm.languages.length > 0 ? mentorForm.languages : ["English"],
+            experience: mentorForm.experience,
+            bio: mentorForm.bio,
+            proof: mentorForm.proof,
+            status: "pending"
+          };
 
-    db.pendingMentors.push(newPendingMentor);
-    saveDB(db);
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
 
-    logActivity(
-      `New professional mentor application submitted by ${newPendingMentor.name}.`,
-      `पेशेवर मार्गदर्शक ${newPendingMentor.name} द्वारा नया आवेदन जमा किया गया।`,
-      `కొత్త మెంటార్ దరఖాస్తు ${newPendingMentor.name} చే సమర్పించబడింది.`
-    );
+      if (!response.ok) {
+        alert(data.error || "Authentication failed");
+        return;
+      }
 
-    alert(currentLang === "hi" ? "आपका मार्गदर्शक आवेदन सफलतापूर्वक जमा हो गया है और समीक्षा के अधीन है।" : currentLang === "te" ? "మీ మెంటార్ దరఖాస్తు విజయవంతంగా సమర్పించబడింది." : "Your mentor application has been successfully submitted and is under review.");
-    onBackToHome();
+      localStorage.setItem("aarohi_token", data.token);
+      localStorage.setItem("aarohi_user", JSON.stringify(data.user));
+
+      if (isLoginMode) {
+        alert("Logged in successfully!");
+        onBackToHome();
+      } else {
+        alert(currentLang === "hi" ? "आपका मार्गदर्शक आवेदन सफलतापूर्वक जमा हो गया है और समीक्षा के अधीन है।" : currentLang === "te" ? "మీ మెంటార్ దరఖాస్తు విజయవంతంగా సమర్పించబడింది." : "Your mentor application has been successfully submitted and is under review.");
+        onBackToHome();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Backend connection error. Ensure backend server is running.");
+    }
   };
 
   return (
@@ -218,61 +270,131 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
           </p>
         </div>
 
+        {/* Toggle Login Mode Tab */}
+        <div style={{ display: "flex", borderBottom: "1px solid var(--border-color)" }}>
+          <button 
+            type="button" 
+            onClick={() => { setIsLoginMode(false); setErrors({}); }}
+            style={{
+              flex: 1,
+              padding: "1rem",
+              background: !isLoginMode ? "#fff" : "var(--lavender-light)",
+              border: "none",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              color: !isLoginMode ? "var(--primary-color)" : "var(--text-muted)",
+              cursor: "pointer",
+              borderBottom: !isLoginMode ? "3px solid var(--primary-color)" : "none"
+            }}
+          >
+            {currentLang === "hi" ? "नया पंजीकरण" : "Register"}
+          </button>
+          <button 
+            type="button" 
+            onClick={() => { setIsLoginMode(true); setErrors({}); }}
+            style={{
+              flex: 1,
+              padding: "1rem",
+              background: isLoginMode ? "#fff" : "var(--lavender-light)",
+              border: "none",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              color: isLoginMode ? "var(--primary-color)" : "var(--text-muted)",
+              cursor: "pointer",
+              borderBottom: isLoginMode ? "3px solid var(--primary-color)" : "none"
+            }}
+          >
+            {currentLang === "hi" ? "लॉगिन करें" : "Login"}
+          </button>
+        </div>
+
         {/* Student Form */}
         {!isMentorMode ? (
           <form onSubmit={handleStudentSubmit} style={{ padding: "2.5rem" }}>
-            <div className="form-group">
-              <label className="form-label">Full Name</label>
-              <div style={{ position: "relative" }}>
-                <User size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  style={{ paddingLeft: "2.5rem" }} 
-                  placeholder="Enter full name"
-                  value={studentForm.name} 
-                  onChange={e => setStudentForm({ ...studentForm, name: e.target.value })} 
-                />
-              </div>
-              {errors.name && <span className="form-error"><AlertCircle size={12} /> {errors.name}</span>}
-            </div>
-
+            {/* Email and Password fields */}
             <div className="form-row-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div className="form-group">
-                <label className="form-label">Age</label>
+                <label className="form-label">Email Address *</label>
                 <div style={{ position: "relative" }}>
-                  <Calendar size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                  <Mail size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
                   <input 
-                    type="number" 
+                    type="email" 
                     className="form-control" 
                     style={{ paddingLeft: "2.5rem" }} 
-                    placeholder="e.g. 17"
-                    value={studentForm.age} 
-                    onChange={e => setStudentForm({ ...studentForm, age: e.target.value })} 
+                    placeholder="name@example.com"
+                    value={authForm.email} 
+                    onChange={e => setAuthForm({ ...authForm, email: e.target.value })} 
                   />
                 </div>
-                {errors.age && <span className="form-error">{errors.age}</span>}
+                {errors.email && <span className="form-error"><AlertCircle size={12} /> {errors.email}</span>}
               </div>
-
+              
               <div className="form-group">
-                <label className="form-label">Class</label>
-                <div style={{ position: "relative" }}>
-                  <GraduationCap size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
-                  <select 
-                    className="form-control" 
-                    style={{ paddingLeft: "2.5rem" }}
-                    value={studentForm.className} 
-                    onChange={e => setStudentForm({ ...studentForm, className: e.target.value })}
-                  >
-                    <option value="">-- Select Class --</option>
-                    <option value="Class 11th">Class 11th</option>
-                    <option value="Class 12th">Class 12th</option>
-                    <option value="Passed 12th">Passed 12th</option>
-                  </select>
-                </div>
-                {errors.className && <span className="form-error">{errors.className}</span>}
+                <label className="form-label">Password *</label>
+                <input 
+                  type="password" 
+                  className="form-control" 
+                  placeholder="Enter secure password"
+                  value={authForm.password} 
+                  onChange={e => setAuthForm({ ...authForm, password: e.target.value })} 
+                />
+                {errors.password && <span className="form-error"><AlertCircle size={12} /> {errors.password}</span>}
               </div>
             </div>
+
+            {!isLoginMode && (
+              <>
+                <div className="form-group">
+                  <label className="form-label">Full Name</label>
+                  <div style={{ position: "relative" }}>
+                    <User size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      style={{ paddingLeft: "2.5rem" }} 
+                      placeholder="Enter full name"
+                      value={studentForm.name} 
+                      onChange={e => setStudentForm({ ...studentForm, name: e.target.value })} 
+                    />
+                  </div>
+                  {errors.name && <span className="form-error"><AlertCircle size={12} /> {errors.name}</span>}
+                </div>
+
+                <div className="form-row-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  <div className="form-group">
+                    <label className="form-label">Age</label>
+                    <div style={{ position: "relative" }}>
+                      <Calendar size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                      <input 
+                        type="number" 
+                        className="form-control" 
+                        style={{ paddingLeft: "2.5rem" }} 
+                        placeholder="e.g. 17"
+                        value={studentForm.age} 
+                        onChange={e => setStudentForm({ ...studentForm, age: e.target.value })} 
+                      />
+                    </div>
+                    {errors.age && <span className="form-error">{errors.age}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Class</label>
+                    <div style={{ position: "relative" }}>
+                      <GraduationCap size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                      <select 
+                        className="form-control" 
+                        style={{ paddingLeft: "2.5rem" }}
+                        value={studentForm.className} 
+                        onChange={e => setStudentForm({ ...studentForm, className: e.target.value })}
+                      >
+                        <option value="">-- Select Class --</option>
+                        <option value="Class 11th">Class 11th</option>
+                        <option value="Class 12th">Class 12th</option>
+                        <option value="Passed 12th">Passed 12th</option>
+                      </select>
+                    </div>
+                    {errors.className && <span className="form-error">{errors.className}</span>}
+                  </div>
+                </div>
 
             <div className="form-group">
               <label className="form-label">School / College Name</label>
@@ -484,30 +606,67 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
                 value={studentForm.avatar.startsWith("data:") ? "" : studentForm.avatar} 
                 onChange={e => setStudentForm({ ...studentForm, avatar: e.target.value })} 
               />
-            </div>
+              </div>
+              </>
+            )}
 
             <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-              Register & Access Dashboard
+              {isLoginMode 
+                ? (currentLang === "hi" ? "लॉगिन करें" : "Login & Access Dashboard")
+                : (currentLang === "hi" ? "पंजीकरण करें" : "Register & Access Dashboard")}
             </button>
           </form>
         ) : (
           /* Mentor Form */
           <form onSubmit={handleMentorSubmit} style={{ padding: "2.5rem" }}>
-            <div className="form-group">
-              <label className="form-label">Professional Full Name</label>
-              <div style={{ position: "relative" }}>
-                <User size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  style={{ paddingLeft: "2.5rem" }} 
-                  placeholder="e.g. Dr. Kavitha Reddy"
-                  value={mentorForm.name} 
-                  onChange={e => setMentorForm({ ...mentorForm, name: e.target.value })} 
-                />
+            {/* Email and Password fields */}
+            <div className="form-row-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="form-group">
+                <label className="form-label">Email Address *</label>
+                <div style={{ position: "relative" }}>
+                  <Mail size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                  <input 
+                    type="email" 
+                    className="form-control" 
+                    style={{ paddingLeft: "2.5rem" }} 
+                    placeholder="mentor@example.com"
+                    value={authForm.email} 
+                    onChange={e => setAuthForm({ ...authForm, email: e.target.value })} 
+                  />
+                </div>
+                {errors.email && <span className="form-error"><AlertCircle size={12} /> {errors.email}</span>}
               </div>
-              {errors.name && <span className="form-error"><AlertCircle size={12} /> {errors.name}</span>}
+              
+              <div className="form-group">
+                <label className="form-label">Password *</label>
+                <input 
+                  type="password" 
+                  className="form-control" 
+                  placeholder="Enter secure password"
+                  value={authForm.password} 
+                  onChange={e => setAuthForm({ ...authForm, password: e.target.value })} 
+                />
+                {errors.password && <span className="form-error"><AlertCircle size={12} /> {errors.password}</span>}
+              </div>
             </div>
+
+            {!isLoginMode && (
+              <>
+                <div className="form-group">
+                  <label className="form-label">Professional Full Name</label>
+                  <div style={{ position: "relative" }}>
+                    <User size={18} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      style={{ paddingLeft: "2.5rem" }} 
+                      placeholder="e.g. Dr. Kavitha Reddy"
+                      value={mentorForm.name} 
+                      onChange={e => setMentorForm({ ...mentorForm, name: e.target.value })} 
+                    />
+                  </div>
+                  {errors.name && <span className="form-error"><AlertCircle size={12} /> {errors.name}</span>}
+                </div>
 
             <div className="form-row-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div className="form-group">
@@ -625,8 +784,13 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
               {errors.bio && <span className="form-error">{errors.bio}</span>}
             </div>
 
+              </>
+            )}
+
             <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-              Submit Onboarding Application
+              {isLoginMode 
+                ? (currentLang === "hi" ? "लॉगिन करें" : "Login & Access Dashboard")
+                : (currentLang === "hi" ? "आवेदन जमा करें" : "Submit Onboarding Application")}
             </button>
           </form>
         )}

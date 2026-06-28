@@ -34,7 +34,7 @@ export default function AcademicTracker({ studentProfile, onUpdateProfile, curre
     ];
 
     // Update badges check: if they score 90%+, give them a "High Achiever" badge
-    let updatedBadges = [...studentProfile.badges];
+    let updatedBadges = [...(studentProfile.badges || [])];
     if (marks >= 90 && !updatedBadges.includes("High Achiever")) {
       updatedBadges.push("High Achiever");
     }
@@ -74,7 +74,7 @@ export default function AcademicTracker({ studentProfile, onUpdateProfile, curre
   };
 
   // Generate SVG Chart Points
-  const records = studentProfile.academicRecords;
+  const records = studentProfile?.academicRecords || [];
   const chartHeight = 180;
   const chartWidth = 550;
   const padding = 40;
@@ -198,7 +198,7 @@ export default function AcademicTracker({ studentProfile, onUpdateProfile, curre
             gap: "1rem",
             marginTop: "1rem"
           }}>
-            {studentProfile.badges.map((badge, idx) => (
+            {(studentProfile.badges || []).map((badge, idx) => (
               <div 
                 key={idx} 
                 style={{
@@ -306,25 +306,30 @@ export default function AcademicTracker({ studentProfile, onUpdateProfile, curre
               </tr>
             </thead>
             <tbody>
-              {records.map((rec, i) => (
-                <tr key={i}>
-                  <td style={{ fontWeight: 600, color: "var(--text-main)" }}>
-                    <BookOpen size={16} style={{ verticalAlign: "middle", marginRight: "8px", color: "var(--primary-color)" }} />
-                    {rec.examName}
+              {records.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: "center", padding: "1.5rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+                    {currentLang === "en" ? "No academic records added yet. Click 'Add Record' to start." : "अभी तक कोई शैक्षणिक रिकॉर्ड नहीं जोड़ा गया है। शुरू करने के लिए 'रिकॉर्ड जोड़ें' पर क्लिक करें।"}
                   </td>
-                  <td>{rec.year}</td>
-                  <td style={{ fontWeight: 700, color: rec.marksPercentage >= 75 ? "#16a34a" : "var(--text-main)" }}>
-                    {rec.marksPercentage}%
-                  </td>
-                  <td>
-                    <span className="badge success">
-                      <CheckCircle size={12} style={{ verticalAlign: "middle", marginRight: "3px" }} />
-                      {currentLang === "en" ? "Verified" : "सत्यापित"}
-                    </span>
-                  </td>
-                  <td>
-                    {/* Don't let them delete the first index record to keep dashboard populated */}
-                    {i > 0 ? (
+                </tr>
+              ) : (
+                records.map((rec, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 600, color: "var(--text-main)" }}>
+                      <BookOpen size={16} style={{ verticalAlign: "middle", marginRight: "8px", color: "var(--primary-color)" }} />
+                      {rec.examName}
+                    </td>
+                    <td>{rec.year}</td>
+                    <td style={{ fontWeight: 700, color: rec.marksPercentage >= 75 ? "#16a34a" : "var(--text-main)" }}>
+                      {rec.marksPercentage}%
+                    </td>
+                    <td>
+                      <span className="badge success">
+                        <CheckCircle size={12} style={{ verticalAlign: "middle", marginRight: "3px" }} />
+                        {currentLang === "en" ? "Verified" : "सत्यापित"}
+                      </span>
+                    </td>
+                    <td>
                       <button 
                         onClick={() => handleDeleteRecord(i)}
                         style={{
@@ -337,14 +342,10 @@ export default function AcademicTracker({ studentProfile, onUpdateProfile, curre
                       >
                         <Trash2 size={16} />
                       </button>
-                    ) : (
-                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-                        {currentLang === "en" ? "Locked base" : "मूल रिकॉर्ड"}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

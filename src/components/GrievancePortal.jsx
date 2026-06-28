@@ -111,7 +111,9 @@ export default function GrievancePortal({ studentProfile, currentLang }) {
           {helplines.map((help, idx) => (
             <div key={idx} className="emergency-contact-item">
               <span className="emergency-contact-name">{help.name}</span>
-              <span className="emergency-contact-number">{help.number}</span>
+              <a href={`tel:${help.number}`} className="emergency-contact-number" style={{ textDecoration: "none", transition: "color 0.2s" }} onMouseOver={e => e.target.style.color = "var(--primary-hover)"} onMouseOut={e => e.target.style.color = "var(--primary-color)"}>
+                {help.number}
+              </a>
               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "2px" }}>{help.desc}</span>
             </div>
           ))}

@@ -3,7 +3,8 @@ import LandingPage from "./components/LandingPage";
 import Registration from "./components/Registration";
 import StudentDashboard from "./components/StudentDashboard";
 import AdminDashboard from "./components/AdminDashboard";
-import { getDB, saveDB } from "./data/mockData";
+import ScholarshipHub from "./components/ScholarshipHub";
+import { getDB, saveDB, initDB } from "./data/mockData";
 import { ShieldCheck, UserCheck, Eye } from "lucide-react";
 
 export default function App() {
@@ -12,6 +13,16 @@ export default function App() {
   const [currentLang, setCurrentLang] = useState(db.language || "en");
   const [studentProfile, setStudentProfile] = useState(db.studentProfile);
   const [activePersona, setActivePersona] = useState("guest"); // guest, student, admin
+
+  useEffect(() => {
+    // Load from MongoDB backend asynchronously
+    initDB().then((freshDb) => {
+      setDb(freshDb);
+      if (freshDb.studentProfile) {
+        setStudentProfile(freshDb.studentProfile);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     // Sync language preference in db
@@ -116,11 +127,7 @@ export default function App() {
         <LandingPage 
           onRegisterClick={() => setCurrentPage("register")}
           onExploreOpportunities={() => {
-            if (activePersona === "student") {
-              setCurrentPage("dashboard");
-            } else {
-              setCurrentPage("register");
-            }
+            setCurrentPage("publicScholarships");
           }}
           onExploreCareers={() => {
             if (activePersona === "student") {
@@ -178,6 +185,7 @@ export default function App() {
 
       {currentPage === "dashboard" && studentProfile && (
         <StudentDashboard 
+          db={db}
           studentProfile={studentProfile}
           onUpdateProfile={handleUpdateProfile}
           onLogout={() => {
@@ -195,8 +203,8 @@ export default function App() {
             <div className="sidebar-header">
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <ShieldCheck size={28} color="#D946EF" />
-                <span className="sidebar-logo" style={{ fontFamily: currentLang === 'te' ? 'inherit' : 'var(--font-hindi)' }}>
-                  {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'आरोही' : 'Aarohi'}
+                <span className={`sidebar-logo brand-text-${currentLang}`}>
+                  {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'ఆరోహి' : 'Aarohi'}
                 </span>
               </div>
             </div>
@@ -238,7 +246,7 @@ export default function App() {
           <div className="dashboard-content-wrapper">
             <header className="dashboard-header">
               <div className="header-left">
-                <span className="logo-hindi-nav" style={{ fontSize: "1.4rem", fontFamily: currentLang === 'te' ? 'inherit' : 'var(--font-hindi)' }}>
+                <span className={`logo-hindi-nav brand-text-${currentLang}`} style={{ fontSize: "1.4rem" }}>
                   {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'आरोही' : 'Aarohi'}
                 </span>
                 <span style={{ fontSize: "0.8rem", color: "#6b21a8", background: "#f3e8ff", padding: "2px 8px", borderRadius: "10px", fontWeight: 600 }}>
@@ -250,6 +258,51 @@ export default function App() {
             <main className="dashboard-main">
               <AdminDashboard currentLang={currentLang} />
             </main>
+          </div>
+        </div>
+      )}
+
+      {currentPage === "publicScholarships" && (
+        <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)" }}>
+          {/* Custom Navbar for Public Scholarship View */}
+          <nav className="navbar-landing" style={{ position: "sticky", top: 0, zIndex: 1000, boxShadow: "var(--shadow-sm)" }}>
+            <div className="container navbar-container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div 
+                className="navbar-brand-wrapper"
+                onClick={() => setCurrentPage("landing")}
+                style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+              >
+                <span className={`logo-hindi-nav brand-text-${currentLang}`} style={{ fontSize: "1.8rem", fontWeight: 800, background: "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  {currentLang === 'te' ? 'ఆరోహి' : currentLang === 'hi' ? 'आरोही' : 'Aarohi'}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <button 
+                  onClick={() => setCurrentPage("landing")}
+                  className="btn-premium-secondary"
+                  style={{ padding: "0.5rem 1.2rem", fontSize: "0.85rem", border: "1px solid var(--border-color)" }}
+                >
+                  {currentLang === "hi" ? "मुख्य पृष्ठ" : currentLang === "te" ? "హోమ్ పేజీ" : "Back to Home"}
+                </button>
+                <button 
+                  onClick={() => setCurrentPage("register")}
+                  className="btn-premium-primary"
+                  style={{ padding: "0.5rem 1.2rem", fontSize: "0.85rem" }}
+                >
+                  {currentLang === "hi" ? "पंजीकरण करें" : currentLang === "te" ? "రిజిస్టర్ చేసుకోండి" : "Register Now"}
+                </button>
+              </div>
+            </div>
+          </nav>
+          
+          <div className="container" style={{ paddingTop: "2rem", paddingBottom: "4rem" }}>
+            <ScholarshipHub 
+              db={db}
+              studentProfile={null}
+              onUpdateProfile={handleUpdateProfile}
+              currentLang={currentLang}
+              onRegisterRedirect={() => setCurrentPage("register")}
+            />
           </div>
         </div>
       )}

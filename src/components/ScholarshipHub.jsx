@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { Search, Filter, Calendar, Award, CheckCircle, Info, ChevronRight } from "lucide-react";
 import { getDB, saveDB, logActivity } from "../data/mockData";
 
-export default function ScholarshipHub({ studentProfile, onUpdateProfile, currentLang }) {
-  const db = getDB();
-  const [scholarships, setScholarships] = useState(db.scholarships);
+export default function ScholarshipHub({ db, studentProfile, onUpdateProfile, currentLang, onRegisterRedirect }) {
+  const scholarships = db?.scholarships || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
 
-  // Eligibility Check States (pre-populated from student profile)
+  // Eligibility Check States (pre-populated from student profile if logged in)
   const [userMarks, setUserMarks] = useState(
-    studentProfile.academicRecords.length > 0 
+    studentProfile && studentProfile.academicRecords && studentProfile.academicRecords.length > 0 
       ? Math.max(...studentProfile.academicRecords.map(r => r.marksPercentage)) 
       : 75
   );
-  const [userIncome, setUserIncome] = useState(studentProfile.familyIncome || 150000);
+  const [userIncome, setUserIncome] = useState(studentProfile?.familyIncome || 150000);
   const [checkerEnabled, setCheckerEnabled] = useState(false);
 
   // Selected scholarship detail modal
@@ -23,6 +22,17 @@ export default function ScholarshipHub({ studentProfile, onUpdateProfile, curren
   const handleApply = (id) => {
     const sch = scholarships.find(s => s.id === id);
     if (!sch) return;
+
+    // Direct redirection to the actual scholarship page
+    const url = sch.applyLink || sch.applyUrl;
+    if (url) {
+      window.open(url, "_blank");
+    }
+
+    if (!studentProfile) {
+      // Guest mode - successfully redirected, no profile updates needed
+      return;
+    }
 
     // 1. Add scholarship application to profile with "Approved" to simulate immediate award in prototype
     const appliedRecord = {
@@ -52,12 +62,7 @@ export default function ScholarshipHub({ studentProfile, onUpdateProfile, curren
     // 4. Notify parent state
     onUpdateProfile(updatedProfile);
 
-    // 5. Open external application portal
-    if (sch.applyUrl) {
-      window.open(sch.applyUrl, "_blank");
-    }
-
-    // 6. Close details modal if open
+    // 5. Close details modal if open
     setSelectedScholarship(null);
   };
 
@@ -180,7 +185,7 @@ export default function ScholarshipHub({ studentProfile, onUpdateProfile, curren
       <div className="grid-three-col">
         {filteredScholarships.map(sch => {
           // Check application status
-          const application = studentProfile.appliedScholarships.find(a => a.scholarshipId === sch.id);
+          const application = studentProfile?.appliedScholarships?.find(a => a.scholarshipId === sch.id);
           const isApplied = !!application;
           
           return (
@@ -303,7 +308,7 @@ export default function ScholarshipHub({ studentProfile, onUpdateProfile, curren
                 {currentLang === "en" ? "Close" : "बंद करें"}
               </button>
               
-              {studentProfile.appliedScholarships.some(a => a.scholarshipId === selectedScholarship.id) ? (
+              {(studentProfile?.appliedScholarships || []).some(a => a.scholarshipId === selectedScholarship.id) ? (
                 <button className="btn-primary" disabled style={{ background: "#d1d5db", color: "#6b7280", border: "none", boxShadow: "none" }}>
                   {currentLang === "en" ? "Already Applied" : "पहले से लागू"}
                 </button>

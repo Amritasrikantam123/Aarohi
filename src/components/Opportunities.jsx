@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Search, Filter, Calendar, Briefcase, Award, CheckCircle, Info, Send } from "lucide-react";
 import { getDB, saveDB } from "../data/mockData";
 
-export default function Opportunities({ currentLang }) {
-  const db = getDB();
-  const [opportunities, setOpportunities] = useState(db.opportunities);
+export default function Opportunities({ db, currentLang }) {
+  const opportunities = db?.opportunities || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("All");
 
@@ -14,11 +13,44 @@ export default function Opportunities({ currentLang }) {
 
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
 
-  const handleRegister = (id) => {
-    const updated = [...registeredIds, id];
-    setRegisteredIds(updated);
-    localStorage.setItem("aarohi_registered_opportunities", JSON.stringify(updated));
-    setSelectedOpportunity(null);
+  const handleRegister = async (id) => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("aarohi_user"));
+      const studentId = storedUser?._id || storedUser?.id || db?.studentProfile?._id;
+      if (!studentId) {
+        alert("Please log in first.");
+        return;
+      }
+      
+      const payload = {
+        student: studentId,
+        opportunity: id,
+        status: "Applied",
+        appliedDate: new Date().toISOString().split('T')[0]
+      };
+
+      const response = await fetch("http://localhost:5000/api/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("aarohi_token")}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register");
+      }
+
+      const updated = [...registeredIds, id];
+      setRegisteredIds(updated);
+      localStorage.setItem("aarohi_registered_opportunities", JSON.stringify(updated));
+      setSelectedOpportunity(null);
+      alert(currentLang === "en" ? "Registered successfully!" : "पंजीकरण सफल रहा!");
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting registration application to MongoDB.");
+    }
   };
 
   const filtered = opportunities.filter(opp => {

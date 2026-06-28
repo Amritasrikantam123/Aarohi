@@ -4,6 +4,8 @@
   - [x] Initialize Vite React application in current directory
   - [x] Install `lucide-react` for modern icons
   - [x] Verify build and cleanup default assets
+  - [x] Install Backend Security & JWT Dependencies (bcryptjs, jsonwebtoken, express-mongo-sanitize, express-rate-limit, helmet, multer, cloudinary, nodemailer)
+- [x] Create / Refine Mongoose Database Models
 - [x] CSS Framework & Design System
   - [x] Build global CSS with custom variables (color palette, spacing, typography, glassmorphism) in `src/index.css`
   - [x] Import Devnagari-compatible beautiful fonts (e.g. Rozha One, Hind, Poppins) from Google Fonts
