@@ -19,7 +19,7 @@ const Course = require("./models/Course");
 const GovernmentScheme = require("./models/GovernmentScheme");
 
 const app = express();
-app.set("trust proxy", 1);
+//app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -52,7 +52,7 @@ const apiLimiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per window
   message: "Too many requests from this IP, please try again after 15 minutes."
 });
-app.use("/api/", apiLimiter);
+//app.use("/api/", apiLimiter);
 
 // MongoDB connection
 const startDatabase = async () => {
