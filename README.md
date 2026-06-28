@@ -1,86 +1,296 @@
-# Setup & Deployment Instructions for Aarohi (आरोही)
+# 🌸 Aarohi – Empowering Girls Through Education & Opportunities
 
-Aarohi is a full-stack social impact platform designed to empower post-Class 10 girls by dynamically matching educational scholarships, internships, government schemes, professional mentors, and skill-development workshops.
+> **"Empowering Every Girl to Learn, Grow, and Lead."**
+
+Aarohi is a full-stack MERN web application designed to empower girls by providing access to educational opportunities, scholarships, government schemes, career guidance, skill development resources, grievance support, and community engagement—all through one unified platform.
+
+## 🌐 Live Demo
+
+**Frontend:**  
+https://amritasrikantam123.github.io/Aarohi/
+
+**Backend API:**  
+https://aarohi-pr61.onrender.com
 
 ---
 
-## Local Setup Instructions
+# 📖 About the Project
 
-Follow these instructions to run the frontend and backend of Aarohi on your local development machine.
+Many girls face challenges in accessing quality educational resources, scholarships, government welfare schemes, career counseling, and mentorship opportunities.
 
-### Prerequisites
-- Node.js (v18 or above recommended)
-- npm (v9 or above)
-- MongoDB (Running locally or a MongoDB Atlas connection string)
+**Aarohi** bridges this gap by providing a centralized digital platform where users can:
 
-### 1. Database Configuration
-Ensure MongoDB is running locally on:
-`mongodb://localhost:27017/aarohi`
+- Discover scholarships
+- Explore career opportunities
+- Access government schemes
+- Register for educational events
+- Learn through curated courses
+- Submit grievances
+- Receive notifications
+- Connect with educational resources
 
-Alternatively, you can provide an Atlas cloud cluster string in the environment configurations.
+---
 
-### 2. Backend Server Setup
-Navigate into the `backend` folder and follow these steps:
+# ✨ Features
+
+## 👤 User Authentication
+
+- Secure Registration
+- Login
+- JWT Authentication
+- Role-based Access
+- Password Encryption using bcrypt
+
+---
+
+## 🎓 Career Guidance
+
+- Career Roadmaps
+- Skill Recommendations
+- Higher Education Guidance
+- Career Opportunities
+
+---
+
+## 💼 Scholarships & Opportunities
+
+- National Scholarships
+- Internship Opportunities
+- Educational Programs
+- Fellowship Listings
+
+---
+
+## 🏛 Government Schemes
+
+- Women Empowerment Schemes
+- Educational Financial Assistance
+- Skill Development Programs
+- Welfare Initiatives
+
+---
+
+## 📚 Courses
+
+- Skill Development
+- Programming
+- Communication Skills
+- Professional Certifications
+
+---
+
+## 📅 Events
+
+- Workshops
+- Seminars
+- Competitions
+- Career Fairs
+
+---
+
+## 📢 Notifications
+
+- Important Announcements
+- Scholarship Deadlines
+- Event Updates
+- Platform Notifications
+
+---
+
+## 📝 Grievance Portal
+
+Users can submit:
+
+- Academic Issues
+- Financial Issues
+- Safety Concerns
+- General Queries
+
+---
+
+## 📧 Contact Support
+
+Users can contact administrators directly through the platform.
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React.js
+- Vite
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Axios
+- Lucide React
+
+## Backend
+
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- bcrypt.js
+- Nodemailer
+- Helmet
+- CORS
+- Express Rate Limiter
+
+## Database
+
+- MongoDB Atlas
+
+## Deployment
+
+Frontend:
+- GitHub Pages
+
+Backend:
+- Render
+
+Database:
+- MongoDB Atlas
+
+---
+
+# 📂 Project Structure
+
+```
+Aarohi/
+│
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── assets/
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── backend/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   └── package.json
+│
+├── public/
+├── package.json
+└── README.md
+```
+
+---
+
+# 🔒 Security Features
+
+- JWT Authentication
+- Password Hashing
+- Helmet Security
+- MongoDB Sanitization
+- Rate Limiting
+- Environment Variables
+- Secure REST APIs
+
+---
+
+# 🚀 Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/Amritasrikantam123/Aarohi.git
+```
+
+## Install Frontend
+
+```bash
+npm install
+```
+
+## Install Backend
 
 ```bash
 cd backend
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
 ```
-
-The Express server will initialize on [http://localhost:5000](http://localhost:5000) and automatically seed initial courses, scholarships, schemes, and career guides into MongoDB.
-
-**Backend Environment Variables (`backend/.env`):**
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/aarohi
-JWT_SECRET=your_super_secret_jwt_key_here
-```
-
-### 3. Frontend App Setup
-Navigate back to the project root directory:
-
-```bash
-# Install root package dependencies
-npm install
-
-# Start Vite server
-npm run dev
-```
-
-The frontend application will spin up at [http://localhost:5173](http://localhost:5173).
 
 ---
 
-## Production Deployment Steps
+# ▶️ Run Locally
 
-Follow these steps to deploy Aarohi to production.
+Frontend
 
-### Database Deployment (MongoDB Atlas)
-1. Register/Login on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. Create a free shared cluster.
-3. Add a database user with password credentials and allow access from anywhere (`0.0.0.0/0` IP whitelist).
-4. Fetch your connection string and swap the template variables (`<db_username>`, `<db_password>`, `<cluster_domain>`).
+```bash
+npm run dev
+```
 
-### Backend Deployment (Render)
-1. Create a free account on [Render](https://render.com).
-2. Create a new **Web Service** and link your GitHub repository.
-3. Configure settings:
-   - Root Directory: `backend`
-   - Build Command: `npm install`
-   - Start Command: `node server.js`
-4. Under **Environment Variables**, define:
-   - `MONGO_URI`: (Your MongoDB Atlas connection URI)
-   - `PORT`: `5000`
-   - `JWT_SECRET`: (A secure cryptographic key)
-5. Deploy the web service.
+Backend
 
-### Frontend Deployment (Vercel)
-1. Create a free account on [Vercel](https://vercel.com).
-2. Click **Add New** -> **Project** and import your GitHub repository.
-3. Leave build settings as default (Vite preset).
-4. Under environment variables, ensure `API_URL` points to your Render backend domain endpoint.
-5. Click **Deploy**.
+```bash
+cd backend
+npm run dev
+```
+
+---
+
+# 🌍 Environment Variables
+
+Backend requires:
+
+```
+MONGODB_URI=
+JWT_SECRET=
+JWT_EXPIRES_IN=7d
+```
+
+---
+
+# 📸 Screenshots
+
+> Add screenshots here after deployment.
+
+- Home Page
+- Career Guidance
+- Opportunities
+- Government Schemes
+- Dashboard
+- Login
+- Registration
+
+---
+
+# 🎯 Future Enhancements
+
+- AI Career Recommendation
+- Resume Builder
+- Mentor Chat
+- Multilingual Support
+- Mobile Application
+- Email Notifications
+- Admin Dashboard Analytics
+- Scholarship Recommendation Engine
+- Interview Preparation Module
+- AI Chat Assistant
+
+---
+
+# 👩‍💻 Developer
+
+**Amrita Srikantam**
+
+B.Tech CSE Student
+
+GitHub:
+https://github.com/Amritasrikantam123
+
+---
+
+# 📄 License
+
+This project is developed for educational and social impact purposes.
+
+---
+
+# ❤️ Vision
+
+**"Empowering every girl with equal access to education, opportunities, guidance, and confidence through technology."**
