@@ -95,80 +95,74 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
     setErrors(err);
     return Object.keys(err).length === 0;
   };
+const handleStudentSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateStudent()) return;
 
-  const handleStudentSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateStudent()) return;
+  try {
+    const endpoint = isLoginMode
+      ? "https://aarohi-pr61.onrender.com/api/auth/login"
+      : "https://aarohi-pr61.onrender.com/api/auth/register";
 
-    try {
-      const endpoint = isLoginMode ? "https://aarohi-pr61.onrender.com/api/auth/login" : "https://aarohi-pr61.onrender.com/api/auth/register";
-      const payload = isLoginMode 
-        ? { email: authForm.email, password: authForm.password }
-        : {
-            name: studentForm.name,
-            email: authForm.email,
-            password: authForm.password,
-            role: "student",
-            age: parseInt(studentForm.age),
-            school: studentForm.school,
-            class: studentForm.className,
-            district: studentForm.district,
-            state: studentForm.state,
-            familyIncome: parseFloat(studentForm.familyIncome),
-            contact: studentForm.contact,
-            careerInterests: studentForm.careerInterests,
-            academicRecords: [],
-            avatar: studentForm.avatar || "",
-            featuredStory: { 
-              isFeatured: true, 
-              quoteEn: "Aarohi gave me the confidence to pursue secondary education and discover amazing scholarship opportunities!", 
-              quoteHi: "आरोही ने मुझे माध्यमिक शिक्षा प्राप्त करने और शानदार छात्रवृत्ति के अवसरों को खोजने का आत्मविश्वास दिया!", 
-              quoteTe: "ఆరోహి నాకు సెకండరీ విద్యను అభ్యసించడానికి మరియు అద్భుతమైన స్కాలర్‌షిప్స్ కనుగొనడానికి విశ్వాసాన్ని ఇచ్చింది!", 
-              approved: true 
-            }
-          };
+    const payload = isLoginMode
+      ? { email: authForm.email, password: authForm.password }
+      : {
+          name: studentForm.name,
+          email: authForm.email,
+          password: authForm.password,
+          role: "student",
+          age: parseInt(studentForm.age),
+          school: studentForm.school,
+          class: studentForm.className,
+          district: studentForm.district,
+          state: studentForm.state,
+          familyIncome: parseFloat(studentForm.familyIncome),
+          contact: studentForm.contact,
+          careerInterests: studentForm.careerInterests,
+          academicRecords: [],
+          avatar: studentForm.avatar || "",
+          featuredStory: {
+            isFeatured: true,
+            quoteEn: "Aarohi gave me confidence!",
+            quoteHi: "आरोही ने मुझे आत्मविश्वास दिया!",
+            quoteTe: "ఆరోహి నాకు విశ్వాసాన్ని ఇచ్చింది!",
+            approved: true
+          }
+        };
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-      if (!response.ok) {
-        alert(data.error || "Authentication failed");
-        return;
-      }
+    const data = await response.json();
 
-      localStorage.setItem("aarohi_token", data.token);
-      localStorage.setItem("aarohi_user", JSON.stringify(data.user));
-
-      const db = getDB();
-      db.studentProfile = data.user.studentProfile || data.user;
-      if (!isLoginMode) {
-        db.studentsList.push(db.studentProfile);
-      }
-      saveDB(db);
-
-      logActivity(
-        isLoginMode ? `Student ${db.studentProfile.name} logged in.` : `A new student, ${db.studentProfile.name}, registered from ${db.studentProfile.district}, ${db.studentProfile.state}.`,
-        isLoginMode ? `छात्रा ${db.studentProfile.name} ने लॉगिन किया।` : `एक नई छात्रा, ${db.studentProfile.name}, ने ${db.studentProfile.district}, ${db.studentProfile.state} से पंजीकरण किया।`,
-        isLoginMode ? `విద్యార్థిని ${db.studentProfile.name} లాగిన్ అయ్యారు.` : `${db.studentProfile.district}, ${db.studentProfile.state} నుండి కొత్త విద్యార్థిని ${db.studentProfile.name} నమోదు చేసుకున్నారు.`
-      );
-
-      onRegistrationSuccess(db.studentProfile);
-    } catch (err) {
-      console.error(err);
-      alert("Backend connection error. Ensure the backend server is running.");
+    if (!response.ok) {
+      alert(data.error || "Authentication failed");
+      return;
     }
-  };
+
+    alert(isLoginMode ? "Login successful!" : "Registration successful!");
+
+    if (data.token) {
+      localStorage.setItem("aarohi_token", data.token);
+    }
+
+    onRegistrationSuccess(data.user || payload);
+
+  } catch (err) {
+    console.error(err);
+    alert("Backend connection error");
+  }
+};
 
   const handleMentorSubmit = async (e) => {
     e.preventDefault();
     if (!validateMentor()) return;
 
     try {
-      const endpoint = isLoginMode ? "https://aarohi-pr61.onrender.com/api/auth/login" : "https://aarohi-pr61.onrender.com/api/auth/register";
+      const endpoint = isLoginMode ? "https://aarohi-pr61.onrender.com/api/auth/login" : "http://https://aarohi-pr61.onrender.com/api/auth/register";
       const payload = isLoginMode
         ? { email: authForm.email, password: authForm.password }
         : {
