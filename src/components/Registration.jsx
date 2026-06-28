@@ -101,7 +101,7 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
     if (!validateStudent()) return;
 
     try {
-      const endpoint = isLoginMode ? "http://localhost:5000/api/auth/login" : "http://localhost:5000/api/auth/register";
+      const endpoint = isLoginMode ? "https://aarohi-pr61.onrender.com/api/auth/login" : "https://aarohi-pr61.onrender.com/api/auth/register";
       const payload = isLoginMode 
         ? { email: authForm.email, password: authForm.password }
         : {
@@ -168,7 +168,7 @@ export default function Registration({ onBackToHome, onRegistrationSuccess, curr
     if (!validateMentor()) return;
 
     try {
-      const endpoint = isLoginMode ? "http://localhost:5000/api/auth/login" : "http://localhost:5000/api/auth/register";
+      const endpoint = isLoginMode ? "https://aarohi-pr61.onrender.com/api/auth/login" : "https://aarohi-pr61.onrender.com/api/auth/register";
       const payload = isLoginMode
         ? { email: authForm.email, password: authForm.password }
         : {

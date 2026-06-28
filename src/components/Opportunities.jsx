@@ -29,7 +29,7 @@ export default function Opportunities({ db, currentLang }) {
         appliedDate: new Date().toISOString().split('T')[0]
       };
 
-      const response = await fetch("http://localhost:5000/api/applications", {
+      const response = await fetch("https://aarohi-pr61.onrender.com/api/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
