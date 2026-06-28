@@ -4,7 +4,6 @@ import Registration from "./components/Registration";
 import StudentDashboard from "./components/StudentDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import ScholarshipHub from "./components/ScholarshipHub";
-import { getDB, saveDB, initDB } from "./data/mockData";
 import { ShieldCheck, UserCheck, Eye } from "lucide-react";
 
 export default function App() {
