@@ -19,6 +19,7 @@ const Course = require("./models/Course");
 const GovernmentScheme = require("./models/GovernmentScheme");
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
