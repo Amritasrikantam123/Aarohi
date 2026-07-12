@@ -1,158 +1,161 @@
-# 🌸 Aarohi – Empowering Girls Through Education & Opportunities
+# 🌸 Aarohi – Girl Education Empowerment Platform
 
 > **"Empowering Every Girl to Learn, Grow, and Lead."**
 
-Aarohi is a full-stack MERN web application designed to empower girls by providing access to educational opportunities, scholarships, government schemes, career guidance, skill development resources, grievance support, and community engagement—all through one unified platform.
+Aarohi is a multilingual web platform developed to support girls after 10th grade by providing centralized access to educational guidance, scholarships, government schemes, career roadmaps, mentorship resources, and skill development opportunities.
 
-## 🌐 Live Demo
+The project is being developed as a scalable MERN-stack application with the long-term vision of improving educational accessibility, reducing information gaps, and empowering students through technology.
 
-**Frontend:**  
+---
+
+# 🌐 Live Demo
+
+**Frontend:**
 https://amritasrikantam123.github.io/Aarohi/
 
-**Backend API:**  
+**Backend API:**
 https://aarohi-pr61.onrender.com
 
 ---
 
-# 📖 About the Project
+# 📖 Problem Statement
 
-Many girls face challenges in accessing quality educational resources, scholarships, government welfare schemes, career counseling, and mentorship opportunities.
+Students often rely on multiple websites to search for scholarships, government schemes, career guidance, internships, and educational opportunities. Since this information is scattered across different platforms, many students—especially girls from underserved communities—struggle to discover the resources available to them.
 
-**Aarohi** bridges this gap by providing a centralized digital platform where users can:
-
-- Discover scholarships
-- Explore career opportunities
-- Access government schemes
-- Register for educational events
-- Learn through curated courses
-- Submit grievances
-- Receive notifications
-- Connect with educational resources
+**Aarohi** aims to solve this problem by providing a single platform that brings together educational opportunities, guidance, and support services in one place.
 
 ---
 
-# ✨ Features
+# 🎯 Objectives
 
-## 👤 User Authentication
-
-- Secure Registration
-- Login
-- JWT Authentication
-- Role-based Access
-- Password Encryption using bcrypt
-
----
-
-## 🎓 Career Guidance
-
-- Career Roadmaps
-- Skill Recommendations
-- Higher Education Guidance
-- Career Opportunities
+* Centralize educational resources on one platform
+* Improve awareness of scholarships and government schemes
+* Provide structured career guidance and roadmaps
+* Support skill development and lifelong learning
+* Make educational information accessible through multiple languages
+* Build a scalable platform that can evolve with future student needs
 
 ---
 
-## 💼 Scholarships & Opportunities
+# ✨ Current Features
 
-- National Scholarships
-- Internship Opportunities
-- Educational Programs
-- Fellowship Listings
+### 🎓 Career Guidance
 
----
+* Career roadmaps
+* Higher education guidance
+* Career opportunities
+* Skill recommendations
 
-## 🏛 Government Schemes
+### 💼 Scholarships & Opportunities
 
-- Women Empowerment Schemes
-- Educational Financial Assistance
-- Skill Development Programs
-- Welfare Initiatives
+* Scholarship information
+* Internship opportunities
+* Educational programs
+* Fellowship listings
 
----
+### 🏛 Government Schemes
 
-## 📚 Courses
+* Women empowerment schemes
+* Financial assistance programs
+* Skill development initiatives
+* Welfare schemes
 
-- Skill Development
-- Programming
-- Communication Skills
-- Professional Certifications
+### 📚 Learning Resources
 
----
+* Programming resources
+* Communication skills
+* Professional certification guidance
+* Skill development content
 
-## 📅 Events
+### 📅 Educational Events
 
-- Workshops
-- Seminars
-- Competitions
-- Career Fairs
+* Workshops
+* Seminars
+* Competitions
+* Career fairs
 
----
+### 🌐 Multilingual Support
 
-## 📢 Notifications
+* English
+* Telugu
+* Hindi
 
-- Important Announcements
-- Scholarship Deadlines
-- Event Updates
-- Platform Notifications
+### 👤 Backend Integration *(Ongoing)*
 
----
+The backend is being progressively developed using the MERN stack with support for:
 
-## 📝 Grievance Portal
-
-Users can submit:
-
-- Academic Issues
-- Financial Issues
-- Safety Concerns
-- General Queries
-
----
-
-## 📧 Contact Support
-
-Users can contact administrators directly through the platform.
+* User authentication
+* Database integration
+* Secure REST APIs
+* Resource management
+* Future dashboard features
 
 ---
 
-# 🛠 Tech Stack
+# 🛠 Technology Stack
 
 ## Frontend
 
-- React.js
-- Vite
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- Axios
-- Lucide React
+* React.js
+* Vite
+* HTML5
+* CSS3
+* JavaScript (ES6+)
+* Axios
+* Lucide React
 
-## Backend
+## Backend *(Under Active Development)*
 
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Mongoose
-- JWT Authentication
-- bcrypt.js
-- Nodemailer
-- Helmet
-- CORS
-- Express Rate Limiter
+* Node.js
+* Express.js
+* MongoDB Atlas
+* Mongoose
+* JWT Authentication
+* bcrypt.js
+* Nodemailer
+* Helmet
+* CORS
+* Express Rate Limiter
 
 ## Database
 
-- MongoDB Atlas
+* MongoDB Atlas
 
 ## Deployment
 
-Frontend:
-- GitHub Pages
+**Frontend**
 
-Backend:
-- Render
+* GitHub Pages
 
-Database:
-- MongoDB Atlas
+**Backend**
+
+* Render
+
+**Database**
+
+* MongoDB Atlas
+
+---
+
+# 🏗 Architecture
+
+```text
+                User
+                  │
+                  ▼
+        React Frontend (Vite)
+                  │
+               Axios
+                  │
+                  ▼
+        Express REST APIs
+                  │
+          Authentication
+          & Middleware
+                  │
+                  ▼
+          MongoDB Atlas
+```
 
 ---
 
@@ -171,6 +174,7 @@ Aarohi/
 ├── backend/
 │   ├── models/
 │   ├── routes/
+│   ├── middleware/
 │   ├── server.js
 │   └── package.json
 │
@@ -183,13 +187,15 @@ Aarohi/
 
 # 🔒 Security Features
 
-- JWT Authentication
-- Password Hashing
-- Helmet Security
-- MongoDB Sanitization
-- Rate Limiting
-- Environment Variables
-- Secure REST APIs
+The backend is being developed with modern security practices including:
+
+* JWT-based authentication
+* Password hashing using bcrypt
+* Helmet security middleware
+* CORS protection
+* API rate limiting
+* Environment variables for sensitive credentials
+* Secure REST API design
 
 ---
 
@@ -218,13 +224,13 @@ npm install
 
 # ▶️ Run Locally
 
-Frontend
+### Frontend
 
 ```bash
 npm run dev
 ```
 
-Backend
+### Backend
 
 ```bash
 cd backend
@@ -235,9 +241,9 @@ npm run dev
 
 # 🌍 Environment Variables
 
-Backend requires:
+Create a `.env` file inside the backend folder.
 
-```
+```env
 MONGODB_URI=
 JWT_SECRET=
 JWT_EXPIRES_IN=7d
@@ -247,38 +253,62 @@ JWT_EXPIRES_IN=7d
 
 # 📸 Screenshots
 
-> Add screenshots here after deployment.
+*(Will be updated as the project evolves.)*
 
-- Home Page
-- Career Guidance
-- Opportunities
-- Government Schemes
-- Dashboard
-- Login
-- Registration
+* Home Page
+* Career Guidance
+* Scholarships
+* Government Schemes
+* Learning Resources
+* Login
+* Registration
 
 ---
 
-# 🎯 Future Enhancements
+# 🚀 Future Enhancements
 
-- AI Career Recommendation
-- Resume Builder
-- Mentor Chat
-- Multilingual Support
-- Mobile Application
-- Email Notifications
-- Admin Dashboard Analytics
-- Scholarship Recommendation Engine
-- Interview Preparation Module
-- AI Chat Assistant
+* AI-powered career recommendation system
+* Scholarship recommendation engine
+* Resume builder
+* Mentor matching platform
+* AI career assistant
+* Interview preparation module
+* Personalized notifications
+* Admin dashboard
+* Mobile application
+* Learning analytics
+* Community discussion forum
+
+---
+
+# 📚 Research Direction
+
+Aarohi is also being extended as a research-oriented project to study how multilingual digital platforms can improve awareness and accessibility of educational opportunities for girls.
+
+Future work aims to evaluate:
+
+* Platform usability
+* Student engagement
+* Accessibility improvements
+* Educational awareness
+* Social impact through user studies and feedback
 
 ---
 
 # 👩‍💻 Developer
 
-**Amrita Srikantam**
+**S. Amrita Varshini**
 
-B.Tech CSE Student
+B.Tech – Computer Science and Engineering
+National Institute of Technology Warangal
+
+### Areas of Interest
+
+* Software Development
+* Web Development
+* Artificial Intelligence
+* Education Technology
+* Competitive Programming
 
 GitHub:
 https://github.com/Amritasrikantam123
@@ -287,10 +317,10 @@ https://github.com/Amritasrikantam123
 
 # 📄 License
 
-This project is developed for educational and social impact purposes.
+This project is developed for educational, research, and social-impact purposes.
 
 ---
 
 # ❤️ Vision
 
-**"Empowering every girl with equal access to education, opportunities, guidance, and confidence through technology."**
+> **"Empowering every girl with equal access to education, opportunities, guidance, and confidence through technology."**
