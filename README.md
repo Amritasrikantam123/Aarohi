@@ -199,45 +199,6 @@ The backend is being developed with modern security practices including:
 
 ---
 
-# 🚀 Installation
-
-## Clone Repository
-
-```bash
-git clone https://github.com/Amritasrikantam123/Aarohi.git
-```
-
-## Install Frontend
-
-```bash
-npm install
-```
-
-## Install Backend
-
-```bash
-cd backend
-npm install
-```
-
----
-
-# ▶️ Run Locally
-
-### Frontend
-
-```bash
-npm run dev
-```
-
-### Backend
-
-```bash
-cd backend
-npm run dev
-```
-
----
 
 # 🌍 Environment Variables
 
@@ -248,21 +209,6 @@ MONGODB_URI=
 JWT_SECRET=
 JWT_EXPIRES_IN=7d
 ```
-
----
-
-# 📸 Screenshots
-
-*(Will be updated as the project evolves.)*
-
-* Home Page
-* Career Guidance
-* Scholarships
-* Government Schemes
-* Learning Resources
-* Login
-* Registration
-
 ---
 
 # 🚀 Future Enhancements
