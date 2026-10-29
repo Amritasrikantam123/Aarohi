@@ -1,6 +1,5 @@
 # Aarohi – Girl Education Empowerment Platform
 
-**Live Website:** https://amritasrikantam123.github.io/Aarohi/
 
 Aarohi is a multilingual educational empowerment platform designed to support girls after completing their 10th grade by providing easy access to career guidance, scholarships, government schemes, learning resources, internships, and educational opportunities. The platform brings essential educational and career-related information together in one place, helping students make informed decisions about their academic journey and future careers.
 
